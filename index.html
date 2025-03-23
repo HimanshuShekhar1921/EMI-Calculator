@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Prishu Advanced EMI Calculator</title>
+		<style>
+			/* General Reset */
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Poppins', sans-serif;
+			}
+
+			body {
+				background: #e0e5ec;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				margin: 0;
+				transition: background 0.3s ease;
+			}
+
+			body.dark-mode {
+				background: #1a1a1a;
+				color: #ffffff;
+			}
+
+			.container {
+				background: #e0e5ec;
+				padding: 2rem;
+				border-radius: 20px;
+				box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
+				max-width: 800px;
+				width: 100%;
+				text-align: center;
+				transition: background 0.3s ease, box-shadow 0.3s ease;
+			}
+
+			body.dark-mode .container {
+				background: #2c2c2c;
+				box-shadow: 10px 10px 20px #1f1f1f, -10px -10px 20px #393939;
+			}
+
+			h1 {
+				font-size: 2rem;
+				margin-bottom: 1.5rem;
+				color: #333;
+				font-weight: 600;
+			}
+
+			body.dark-mode h1 {
+				color: #ffffff;
+			}
+
+			.toggle-container {
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				margin-bottom: 1.5rem;
+			}
+
+			.switch {
+				position: relative;
+				display: inline-block;
+				width: 60px;
+				height: 34px;
+			}
+
+			.switch input {
+				opacity: 0;
+				width: 0;
+				height: 0;
+			}
+
+			.slider {
+				position: absolute;
+				cursor: pointer;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: #e0e5ec;
+				box-shadow: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff;
+				transition: 0.4s;
+				border-radius: 34px;
+			}
+
+			.slider:before {
+				position: absolute;
+				content: "";
+				height: 26px;
+				width: 26px;
+				left: 4px;
+				bottom: 4px;
+				background-color: #ffffff;
+				transition: 0.4s;
+				border-radius: 50%;
+				box-shadow: 2px 2px 5px #a3b1c6;
+			}
+
+			input:checked + .slider {
+				background-color: #4caf50;
+			}
+
+			input:checked + .slider:before {
+				transform: translateX(26px);
+			}
+
+			.input-section {
+				margin-bottom: 1.5rem;
+			}
+
+			.input-group {
+				margin-bottom: 1.5rem;
+				text-align: left;
+			}
+
+			label {
+				display: block;
+				margin-bottom: 0.5rem;
+				font-weight: 500;
+				color: #555;
+			}
+
+			body.dark-mode label {
+				color: #ffffff;
+			}
+
+			input,
+			select {
+				width: 100%;
+				padding: 0.8rem;
+				border: none;
+				border-radius: 15px;
+				background: #e0e5ec;
+				box-shadow: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff;
+				font-size: 1rem;
+				color: #333;
+				transition: all 0.3s ease;
+			}
+
+			body.dark-mode input,
+			body.dark-mode select {
+				background: #2c2c2c;
+				box-shadow: inset 5px 5px 10px #1f1f1f, inset -5px -5px 10px #393939;
+				color: #ffffff;
+			}
+
+			input:focus,
+			select:focus {
+				outline: none;
+				box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff;
+			}
+
+			body.dark-mode input:focus,
+			body.dark-mode select:focus {
+				box-shadow: inset 2px 2px 5px #1f1f1f, inset -2px -2px 5px #393939;
+			}
+
+			.button-group {
+				display: flex;
+				gap: 1rem;
+				margin-top: 1rem;
+			}
+
+			button {
+				width: 100%;
+				padding: 0.8rem;
+				border: none;
+				border-radius: 15px;
+				background: #e0e5ec;
+				box-shadow: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+				font-size: 1rem;
+				font-weight: 600;
+				color: #333;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+
+			body.dark-mode button {
+				background: #2c2c2c;
+				box-shadow: 5px 5px 10px #1f1f1f, -5px -5px 10px #393939;
+				color: #ffffff;
+			}
+
+			button:hover {
+				box-shadow: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff;
+			}
+
+			body.dark-mode button:hover {
+				box-shadow: inset 5px 5px 10px #1f1f1f, inset -5px -5px 10px #393939;
+			}
+
+			.reset-button {
+				background: #ff4444;
+				color: #ffffff;
+			}
+
+			body.dark-mode .reset-button {
+				background: #cc0000;
+			}
+
+			.result-section {
+				margin-top: 1.5rem;
+			}
+
+			h2 {
+				font-size: 1.5rem;
+				margin-bottom: 1rem;
+				color: #333;
+				font-weight: 600;
+			}
+
+			body.dark-mode h2 {
+				color: #ffffff;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				background: #e0e5ec;
+				border-radius: 15px;
+				box-shadow: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+				margin-bottom: 1.5rem;
+			}
+
+			body.dark-mode table {
+				background: #2c2c2c;
+				box-shadow: 5px 5px 10px #1f1f1f, -5px -5px 10px #393939;
+			}
+
+			th,
+			td {
+				padding: 0.8rem;
+				text-align: center;
+				color: #333;
+			}
+
+			body.dark-mode th,
+			body.dark-mode td {
+				color: #ffffff;
+			}
+
+			th {
+				font-weight: 600;
+			}
+
+			.chart-container {
+				margin: 1.5rem 0;
+			}
+
+			.table-container {
+				max-height: 300px;
+				overflow-y: auto;
+				border-radius: 15px;
+				box-shadow: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+			}
+
+			body.dark-mode .table-container {
+				box-shadow: 5px 5px 10px #1f1f1f, -5px -5px 10px #393939;
+			}
+
+			.download-buttons {
+				display: flex;
+				gap: 1rem;
+				justify-content: center;
+				margin-top: 1.5rem;
+			}
+
+			.download-buttons button {
+				width: auto;
+				padding: 0.5rem 1rem;
+				border-radius: 10px;
+			}
+
+			/* Content Sections */
+			.content-section {
+				margin-top: 2rem;
+				text-align: left;
+			}
+
+			.topic-section {
+				background: #e0e5ec;
+				padding: 1.5rem;
+				border-radius: 20px;
+				box-shadow: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+				margin-bottom: 2rem;
+				transition: background 0.3s ease, box-shadow 0.3s ease;
+			}
+
+			body.dark-mode .topic-section {
+				background: #2c2c2c;
+				box-shadow: 5px 5px 10px #1f1f1f, -5px -5px 10px #393939;
+			}
+
+			.topic {
+				color: #ff0000;
+				/* Red */
+				font-size: 1.8rem;
+				margin-bottom: 1rem;
+				font-weight: 600;
+			}
+
+			.subtopic {
+				color: #00cc00;
+				/* Green */
+				font-size: 1.4rem;
+				margin-top: 1rem;
+				font-weight: 500;
+			}
+
+			.description {
+				color: #0000ff;
+				/* Blue */
+				font-size: 1rem;
+				margin-bottom: 1.5rem;
+				line-height: 1.6;
+			}
+
+			.faq {
+				margin-top: 1.5rem;
+			}
+
+			.faq .subtopic {
+				margin-bottom: 0.5rem;
+			}
+
+			.faq .description {
+				margin-bottom: 1rem;
+			}
+		</style>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.24/jspdf.plugin.autotable.min.js"></script>
+	</head>
+
+	<body>
+		<div class="container">
+			<!-- EMI Calculator Section -->
+			<h1>📈 Prishu Advanced EMI Calculator 💰</h1>
+			<div class="toggle-container">
+				<label class="switch">
+					<input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+					<span class="slider"></span>
+				</label>
+				<span>Dark Mode 🌙</span>
+			</div>
+			<div class="input-section">
+				<div class="input-group">
+					<label for="principal">Principal Amount:</label>
+					<input type="number" id="principal" placeholder="Enter principal amount">
+				</div>
+				<div class="input-group">
+					<label for="interest">Interest Rate (%):</label>
+					<input type="number" id="interest" placeholder="Enter interest rate">
+				</div>
+				<div class="input-group">
+					<label for="time">Time:</label>
+					<input type="number" id="time" placeholder="Enter time">
+					<select id="timeUnit">
+						<option value="years">Years</option>
+						<option value="months">Months</option>
+					</select>
+				</div>
+				<div class="input-group">
+					<label for="fees">Additional Fees:</label>
+					<input type="number" id="fees" placeholder="Enter additional fees">
+				</div>
+				<div class="input-group">
+					<label for="prepayment">Prepayment Amount:</label>
+					<input type="number" id="prepayment" placeholder="Enter prepayment amount">
+				</div>
+				<div class="input-group">
+					<label for="currency">Currency:</label>
+					<select id="currency">
+						<option value="₹">INR (₹)</option>
+						<option value="$">USD ($)</option>
+						<option value="€">EUR (€)</option>
+					</select>
+				</div>
+				<div class="button-group">
+					<button onclick="calculateEMI()">Calculate EMI 🚀</button>
+					<button onclick="resetCalculator()" class="reset-button">Reset 🔄</button>
+				</div>
+			</div>
+			<div class="result-section">
+				<h2>Results 📊</h2>
+				<table>
+					<tr>
+						<th>EMI</th>
+						<th>Total Interest</th>
+						<th>Total Payment</th>
+					</tr>
+					<tr>
+						<td id="emi">-</td>
+						<td id="total-interest">-</td>
+						<td id="total-payment">-</td>
+					</tr>
+				</table>
+				<div class="chart-container">
+					<canvas id="emiChart"></canvas>
+				</div>
+				<h2>Amortization Schedule 📅</h2>
+				<div class="table-container">
+					<table id="amortization-table">
+						<thead>
+							<tr>
+								<th>Month</th>
+								<th>Principal</th>
+								<th>Interest</th>
+								<th>Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="download-buttons">
+					<button onclick="downloadCSV()">Download CSV 📥</button>
+					<button onclick="downloadPDF()">Download PDF 📄</button>
+				</div>
+			</div>
+
+			<!-- Content Sections -->
+			<div class="content-section">
+				<!-- Why We Chose It -->
+				<div class="topic-section">
+					<h2 class="topic">Why We Chose It</h2>
+					<p class="description">We created this tool to help users easily calculate their EMI and understand the breakdown of their loan payments. It's designed to be user-friendly and visually appealing.</p>
+				</div>
+
+				<!-- How It Works -->
+				<div class="topic-section">
+					<h2 class="topic">How It Works</h2>
+					<p class="description">The calculator uses the formula for EMI calculation based on the principal amount, interest rate, and loan tenure. It also includes features like prepayment and additional fees for accurate results.</p>
+				</div>
+
+				<!-- How to Use -->
+				<div class="topic-section">
+					<h2 class="topic">How to Use</h2>
+					<p class="description">Enter the principal amount, interest rate, and loan tenure. You can also add additional fees and prepayment amounts. Click "Calculate EMI" to see the results.</p>
+				</div>
+
+				<!-- Benefits of Using This Tool -->
+				<div class="topic-section">
+					<h2 class="topic">Benefits of Using This Tool</h2>
+					<p class="description">This tool helps you plan your finances better by providing a clear breakdown of your loan payments. It also allows you to compare different loan scenarios and make informed decisions.</p>
+				</div>
+
+				<!-- Frequently Asked Questions (FAQs) -->
+				<div class="topic-section">
+					<h2 class="topic">Frequently Asked Questions (FAQs)</h2>
+					<div class="faq">
+						<h3 class="subtopic">What is EMI?</h3>
+						<p class="description">EMI stands for Equated Monthly Installment, which is the fixed payment amount made by a borrower to a lender at a specified date each calendar month.</p>
+
+						<h3 class="subtopic">How is EMI calculated?</h3>
+						<p class="description">EMI is calculated using the formula: EMI = [P x R x (1+R)^N]/[(1+R)^N-1], where P is the principal amount, R is the monthly interest rate, and N is the number of months.</p>
+
+						<h3 class="subtopic">Can I include additional fees?</h3>
+						<p class="description">Yes, you can include additional fees like processing fees in the calculation.</p>
+
+						<h3 class="subtopic">What is prepayment?</h3>
+						<p class="description">Prepayment is an amount paid in advance to reduce the principal amount of the loan, which can lower the total interest paid.</p>
+
+						<h3 class="subtopic">Can I change the currency?</h3>
+						<p class="description">Yes, you can select your preferred currency from the dropdown menu.</p>
+
+						<h3 class="subtopic">Is this tool free to use?</h3>
+						<p class="description">Yes, this tool is completely free to use.</p>
+
+						<h3 class="subtopic">Can I download the results?</h3>
+						<p class="description">Yes, you can download the amortization schedule as a CSV or PDF file.</p>
+					</div>
+				</div>
+
+				<!-- Loan Types -->
+				<div class="topic-section">
+					<h2 class="topic">Loan Types</h2>
+					<p class="description">This tool can be used for various types of loans, including home loans, car loans, personal loans, and education loans.</p>
+				</div>
+
+				<!-- Tips for Loan Management -->
+				<div class="topic-section">
+					<h2 class="topic">Tips for Loan Management</h2>
+					<p class="description">1. Always compare interest rates before taking a loan.<br>2. Make prepayments to reduce the loan tenure.<br>3. Avoid missing EMI payments to maintain a good credit score.</p>
+				</div>
+			</div>
+		</div>
+		<script>
+			let emiChart;
+
+			function calculateEMI() {
+				// Get input values
+				const principal = parseFloat(document.getElementById('principal').value);
+				const interest = parseFloat(document.getElementById('interest').value);
+				const time = parseFloat(document.getElementById('time').value);
+				const timeUnit = document.getElementById('timeUnit').value;
+				const fees = parseFloat(document.getElementById('fees').value) || 0;
+				const prepayment = parseFloat(document.getElementById('prepayment').value) || 0;
+				const currency = document.getElementById('currency').value;
+
+				// Validate inputs
+				if (isNaN(principal) || isNaN(interest) || isNaN(time) || principal <= 0 || interest <= 0 || time <= 0) {
+					alert("Please enter valid values for all fields.");
+					return;
+				}
+
+				// Convert time to months
+				const months = timeUnit === 'years' ? time * 12 : time;
+
+				// Convert annual interest rate to monthly
+				const monthlyInterest = interest / 12 / 100;
+
+				// Calculate EMI
+				const emi = (principal * monthlyInterest * Math.pow(1 + monthlyInterest, months)) / (Math.pow(1 + monthlyInterest, months) - 1);
+
+				// Calculate total payment and total interest
+				const totalPayment = emi * months + fees;
+				const totalInterest = totalPayment - principal;
+
+				// Display results
+				document.getElementById('emi').innerText = `${currency}${emi.toFixed(2)}`;
+				document.getElementById('total-interest').innerText = `${currency}${totalInterest.toFixed(2)}`;
+				document.getElementById('total-payment').innerText = `${currency}${totalPayment.toFixed(2)}`;
+
+				// Generate amortization schedule
+				generateAmortizationSchedule(principal, monthlyInterest, months, emi, currency, prepayment);
+
+				// Generate chart
+				generateChart(principal, totalInterest);
+			}
+
+			function generateAmortizationSchedule(principal, monthlyInterest, months, emi, currency, prepayment) {
+				const tableBody = document.querySelector('#amortization-table tbody');
+				tableBody.innerHTML = '';
+				let balance = principal;
+
+				for (let i = 1; i <= months; i++) {
+					const interestPayment = balance * monthlyInterest;
+					const principalPayment = emi - interestPayment;
+					balance -= principalPayment;
+
+					// Apply prepayment
+					if (prepayment > 0 && i === 1) {
+						balance -= prepayment;
+					}
+
+					const row = document.createElement('tr');
+					row.innerHTML = `
+      <td>${i}</td>
+      <td>${currency}${principalPayment.toFixed(2)}</td>
+      <td>${currency}${interestPayment.toFixed(2)}</td>
+      <td>${currency}${balance.toFixed(2)}</td>
+    `;
+					tableBody.appendChild(row);
+				}
+			}
+
+			function generateChart(principal, totalInterest) {
+				const ctx = document.getElementById('emiChart').getContext('2d');
+
+				if (emiChart) {
+					emiChart.destroy();
+				}
+
+				emiChart = new Chart(ctx, {
+					type: 'pie',
+					data: {
+						labels: ['Principal', 'Interest'],
+						datasets: [{
+							data: [principal, totalInterest],
+							backgroundColor: ['#4caf50', '#f44336'],
+						}],
+					},
+					options: {
+						responsive: true,
+						plugins: {
+							legend: {
+								position: 'top',
+							},
+						},
+					},
+				});
+			}
+
+			function downloadCSV() {
+				const rows = document.querySelectorAll('#amortization-table tr');
+				let csvContent = "data:text/csv;charset=utf-8,";
+				rows.forEach(row => {
+					const rowData = [];
+					row.querySelectorAll('th, td').forEach(cell => {
+						rowData.push(cell.innerText);
+					});
+					csvContent += rowData.join(",") + "\n";
+				});
+				const encodedUri = encodeURI(csvContent);
+				const link = document.createElement("a");
+				link.setAttribute("href", encodedUri);
+				link.setAttribute("download", "amortization_schedule.csv");
+				document.body.appendChild(link);
+				link.click();
+			}
+
+			function downloadPDF() {
+				const {
+					jsPDF
+				} = window.jspdf;
+				const doc = new jsPDF();
+				doc.autoTable({
+					html: '#amortization-table'
+				});
+				doc.save('amortization_schedule.pdf');
+			}
+
+			function resetCalculator() {
+				// Clear input fields
+				document.getElementById('principal').value = '';
+				document.getElementById('interest').value = '';
+				document.getElementById('time').value = '';
+				document.getElementById('fees').value = '';
+				document.getElementById('prepayment').value = '';
+				document.getElementById('currency').value = '₹';
+
+				// Clear results
+				document.getElementById('emi').innerText = '-';
+				document.getElementById('total-interest').innerText = '-';
+				document.getElementById('total-payment').innerText = '-';
+
+				// Clear amortization table
+				const tableBody = document.querySelector('#amortization-table tbody');
+				tableBody.innerHTML = '';
+
+				// Clear chart
+				if (emiChart) {
+					emiChart.destroy();
+				}
+			}
+
+			function toggleDarkMode() {
+				document.body.classList.toggle('dark-mode');
+			}
+		</script>
+	</body>
+
+</html>
